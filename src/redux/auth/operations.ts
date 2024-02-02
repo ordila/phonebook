@@ -49,7 +49,7 @@ export const reloadThunk = createAsyncThunk(
       return data;
     } catch (err) {
       if (err instanceof Error) {
-        console.error('Error during reloadThunk:', err.message); // Log the error message
+        console.error('Error during reloadThunk:', err.message);
         return thunkAPI.rejectWithValue(err.message);
       }
     }

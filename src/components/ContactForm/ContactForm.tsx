@@ -26,12 +26,7 @@ export const ContactForm: FC = () => {
     }
   );
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<IUser>();
+  const { register, handleSubmit, reset } = useForm<IUser>();
 
   const contacts = useAppSelector(getContacts);
 
