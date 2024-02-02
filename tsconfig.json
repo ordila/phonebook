@@ -15,11 +15,17 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "types": ["tailwindcss"],
     "baseUrl": "./src",
     "paths": {
       "@/*": ["*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/index.js"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/index.js",
+    "src/redux/auth/selectors.ts"
+  ],
   "exclude": ["node_modules"]
 }

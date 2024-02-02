@@ -5,11 +5,12 @@ import {
   getContactsThunk,
   removeContactThunk,
 } from './operations';
-import { ContactSingle } from '@/components/ContactForm/ContactForm.types';
+import { IGeneralState } from '../store.types';
+import { logOutThunk } from '../auth/operations';
 
-const initialState = {
+const initialState: IGeneralState['contacts'] = {
   contacts: {
-    items: [] as ContactSingle[],
+    items: [],
     isLoading: false,
     error: '',
   },
@@ -34,6 +35,9 @@ const contactsSlice = createSlice({
         if (payload) {
           state.contacts.items = state.contacts.items.concat(payload);
         }
+      })
+      .addCase(logOutThunk.fulfilled, (state, { payload }) => {
+        return initialState;
       })
       .addCase(removeContactThunk.fulfilled, (state, { payload }) => {
         state.contacts.items = state.contacts.items.filter(el => {

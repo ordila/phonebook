@@ -33,7 +33,7 @@ export const editContactThunk = createAsyncThunk(
   'editContact',
   async ({ id, body }: { id: string; body: any }, ThunkApi) => {
     try {
-      const { data } = await instance.put(`contacts/${id}`, body);
+      const { data } = await instance.patch(`contacts/${id}`, body);
 
       return data;
     } catch (err) {

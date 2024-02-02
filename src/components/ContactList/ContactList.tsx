@@ -1,19 +1,19 @@
 import { FC, createContext, useEffect } from 'react';
 
-import { useAppDispatch } from '@/hooks/useAppDispatch';
+import { useAppDispatch } from '@/hooks';
 
-import { getVisibleContacts } from '@/redux/selectors';
-import { getContactsThunk } from '@/redux/operations';
+import { getVisibleContacts } from '@/redux/contacts/selectors';
+import { getContactsThunk } from '@/redux/contacts/operations';
 import { useSelector } from 'react-redux';
 
-import { ContactListItem } from '../ContactListItem/ContactListItem';
+import { ContactListItem } from '@/components';
 
 import { ContactSingle } from '../ContactForm/ContactForm.types';
 
 export const ContactContext = createContext<ContactSingle>({
   createdAt: '',
   name: '',
-  phone: '',
+  number: '',
   id: '',
 });
 
@@ -27,7 +27,7 @@ const ContactList: FC = () => {
   const visibleContacts = useSelector(getVisibleContacts);
 
   return (
-    <ul>
+    <ul className="flex flex-wrap gap-3 justify-center items-start">
       {visibleContacts.map(contact => (
         <ContactContext.Provider value={contact} key={contact.id}>
           <ContactListItem />

@@ -1,29 +1,44 @@
-import { FC } from 'react';
+import { FC, forwardRef } from 'react';
 
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useAppSelector } from '@/hooks/useAppSelector';
-import { useAppDispatch } from '@/hooks/useAppDispatch';
+import { useAppDispatch, useAppSelector } from '@/hooks';
 
-import { getContacts } from '@/redux/selectors';
-import { addContactThunk } from '@/redux/operations';
+import { getContacts } from '@/redux/contacts/selectors';
+import { addContactThunk } from '@/redux/contacts/operations';
 import { nanoid } from '@reduxjs/toolkit';
 
-import { Inputs } from './ContactForm.types';
+import { IUser } from '@/types';
+
+import { Button, TextField } from '@mui/material';
+import { InputMask, InputMaskProps } from '@react-input/mask';
 
 export const ContactForm: FC = () => {
+  const ForwardedInputMask = forwardRef<HTMLInputElement, InputMaskProps>(
+    (props, forwardedRef) => {
+      return (
+        <InputMask
+          ref={forwardedRef}
+          mask="+380 (__) ___ __ __"
+          replacement="_"
+          {...props}
+        />
+      );
+    }
+  );
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<Inputs>();
+  } = useForm<IUser>();
 
   const contacts = useAppSelector(getContacts);
 
   const dispatch = useAppDispatch();
 
-  const handleFormSubmit: SubmitHandler<Inputs> = ({ name, phone }) => {
-    if (!name || !phone) {
+  const handleFormSubmit: SubmitHandler<IUser> = ({ name, number }) => {
+    if (!name || !number) {
       alert('Заповніть усі поля');
       return;
     }
@@ -40,7 +55,7 @@ export const ContactForm: FC = () => {
     dispatch(
       addContactThunk({
         name,
-        phone,
+        number,
         createdAt: String(new Date().toISOString()),
         id: nanoid(),
       })
@@ -49,26 +64,45 @@ export const ContactForm: FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)}>
-      <input
-        type="text"
-        {...register('name', { required: 'Name is required!', maxLength: 20 })}
-      />
-      {errors.name?.type === 'required' && (
-        <p role="alert">{errors.name.message}</p>
-      )}
-      <input
-        type="tel"
-        {...register('phone', {
-          required: 'Phone number is required!',
-          pattern: /^[0-9]*$/,
-        })}
-      />
-      {errors.phone?.type === 'required' && (
-        <p role="alert">{errors.phone.message}</p>
-      )}
-      {errors.phone?.type === 'pattern' && <p role="alert">Only numbers!</p>}
-      <button type="submit">Add contact</button>
-    </form>
+    <div className="max-w-[400px] mx-auto">
+      <form className="flex flex-col" onSubmit={handleSubmit(handleFormSubmit)}>
+        <TextField
+          sx={{ width: '400px', mb: 3 }}
+          label="Name"
+          required
+          variant="outlined"
+          color="secondary"
+          type="text"
+          autoComplete="false"
+          {...register('name', {
+            required: 'Name is required!',
+            maxLength: 20,
+          })}
+        />
+
+        <TextField
+          sx={{ width: '400px', mb: 3 }}
+          label="Phone number"
+          required
+          variant="outlined"
+          color="secondary"
+          type="text"
+          autoComplete="false"
+          InputProps={{
+            inputComponent: ForwardedInputMask,
+          }}
+          {...register('number', {})}
+        ></TextField>
+
+        <Button
+          className="h-[50px] w-full"
+          variant="outlined"
+          color="secondary"
+          type="submit"
+        >
+          Add contact
+        </Button>
+      </form>
+    </div>
   );
 };
